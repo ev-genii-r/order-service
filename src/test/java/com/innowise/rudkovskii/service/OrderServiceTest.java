@@ -3,9 +3,11 @@ package com.innowise.rudkovskii.service;
 import com.innowise.rudkovskii.dto.order.OrderDto;
 import com.innowise.rudkovskii.dto.order.OrderMapper;
 import com.innowise.rudkovskii.dto.order.OrderWithUserDto;
+import com.innowise.rudkovskii.dto.orderItem.OrderItemDto;
 import com.innowise.rudkovskii.dto.user.UserInfoDto;
 import com.innowise.rudkovskii.entity.Order;
 import com.innowise.rudkovskii.exception.ResourceNotFoundException;
+import com.innowise.rudkovskii.repository.ItemRepository;
 import com.innowise.rudkovskii.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +28,9 @@ class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
+
+    @Mock
+    private ItemRepository itemRepository;
 
     @Mock
     private OrderMapper orderMapper;
@@ -51,6 +57,7 @@ class OrderServiceTest {
         order = new Order();
         order.setId(1L);
         order.setUserId(100L);
+        order.setItems(new ArrayList<>());
         order.setStatus("PENDING");
 
         orderDto = new OrderDto();
@@ -168,9 +175,10 @@ class OrderServiceTest {
         OrderDto request = new OrderDto();
         request.setId(1L);
         request.setUserId(100L);
+        request.setItems(new ArrayList<>());
 
         when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
-        when(orderMapper.toEntity(request)).thenReturn(order);
+        //when(orderMapper.toEntity(request)).thenReturn(order);
         when(orderRepository.save(order)).thenReturn(order);
         when(orderMapper.toDto(order)).thenReturn(orderDto);
         when(userIntegration.getUser(100L)).thenReturn(userInfo);
