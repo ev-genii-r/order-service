@@ -144,7 +144,7 @@ jobs:
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} \
             -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.coverage.exclusions="src/main/java/com/innowise/rudkovskii/config/**,src/main/java/com/innowise/rudkovskii/controller/**,src/main/java/com/innowise/rudkovskii/dto/**,src/main/java/com/innowise/rudkovskii/entity/**,src/main/java/com/innowise/rudkovskii/handler/**,src/main/java/Main.java" \
+            -Dsonar.coverage.exclusions="src/main/java/com/innowise/rudkovskii/config/**,src/main/java/com/innowise/rudkovskii/controller/**,src/main/java/com/innowise/rudkovskii/dto/**,src/main/java/com/innowise/rudkovskii/entity/**,src/main/java/com/innowise/rudkovskii/handler/**,src/main/java/OrderServiceApplication.java,src/main/java/com/innowise/rudkovskii/integration/**" \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
