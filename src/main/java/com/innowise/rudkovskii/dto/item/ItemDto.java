@@ -6,9 +6,11 @@ import lombok.Setter;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.NotBlank;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class ItemDto{
 
     @NotNull

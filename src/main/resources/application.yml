@@ -32,3 +32,7 @@ spring:
 
 server:
   port: 8080
+
+user:
+  service:
+    base-url: http://real-user-service:8080

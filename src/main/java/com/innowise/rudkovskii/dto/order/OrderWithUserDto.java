@@ -4,13 +4,15 @@ import com.innowise.rudkovskii.dto.user.UserInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 public class OrderWithUserDto {
 
-    OrderDto order;
-    UserInfoDto user;
+   private OrderDto order;
+   private UserInfoDto user;
 
 }

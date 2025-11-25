@@ -3,15 +3,16 @@ package com.innowise.rudkovskii.service;
 import com.innowise.rudkovskii.dto.order.OrderDto;
 import com.innowise.rudkovskii.dto.order.OrderMapper;
 import com.innowise.rudkovskii.dto.order.OrderWithUserDto;
-import com.innowise.rudkovskii.dto.orderItem.OrderItemMapper;
+import com.innowise.rudkovskii.dto.orderItem.OrderItemDto;
 import com.innowise.rudkovskii.dto.user.UserInfoDto;
+import com.innowise.rudkovskii.entity.Item;
 import com.innowise.rudkovskii.entity.Order;
 import com.innowise.rudkovskii.entity.OrderItem;
 import com.innowise.rudkovskii.exception.ResourceNotFoundException;
+import com.innowise.rudkovskii.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.innowise.rudkovskii.repository.ItemRepository;
 import com.innowise.rudkovskii.repository.OrderRepository;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final ItemRepository itemRepository;
     private final OrderMapper orderMapper;
     private final UserIntegrationService userIntegration;
 
@@ -61,15 +63,33 @@ public class OrderService {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order with id:" + id));
 
-        existingOrder = orderMapper.toEntity(request);
+        existingOrder.setUserId(request.getUserId());
+        existingOrder.setStatus(request.getStatus());
+
+        existingOrder.getItems().clear();
+
+        for (OrderItemDto itemDto : request.getItems()) {
+
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(existingOrder);
+
+            Item item = itemRepository.findById(itemDto.getItemId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Item with id:" + itemDto.getItemId()));
+            orderItem.setItem(item);
+
+            orderItem.setQuantity(itemDto.getQuantity());
+
+            existingOrder.getItems().add(orderItem);
+        }
 
         Order updatedOrder = orderRepository.save(existingOrder);
 
-        OrderDto updatedOrderDto = orderMapper.toDto(updatedOrder);
         UserInfoDto user = userIntegration.getUser(updatedOrder.getUserId());
 
-        return new OrderWithUserDto(updatedOrderDto, user);
+        return new OrderWithUserDto(orderMapper.toDto(updatedOrder), user);
     }
+
+
 
     public List<OrderWithUserDto> getOrdersByIds(List<Long> ids) {
         return orderRepository.findAllById(ids).stream()
